@@ -3,7 +3,14 @@ from django.core.urlresolvers import reverse
 from myblog.models import Category, Post
 import datetime
 
-class CategorizationInline(admin.TabularInline):
+def make_published(modeladmin, request, queryset):
+    now = datetime.datetime.now()
+    queryset.update(published_date=now)
+
+make_published.short_description = "Set date and time for selected posts"
+
+
+class CategoryInline(admin.TabularInline):
     model = Category.posts.through
 
 class PostAdmin(admin.ModelAdmin):
@@ -15,7 +22,7 @@ class PostAdmin(admin.ModelAdmin):
         'author_for_admin',
         'created_date',
         'modified_date',
-        'published_date'
+        'published_date',
     )
 
     fields = (
@@ -45,12 +52,6 @@ class PostAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     exclude = ('posts',)
 
-
-def make_published(modeladmin, request, queryset):
-    now = datetime.datetime.now()
-    queryset.update(published_date=now)
-
-make_published.short_description = "Set date and time for selected posts"
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Post, PostAdmin)

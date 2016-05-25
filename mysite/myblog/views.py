@@ -31,3 +31,14 @@ def detail_view(request, post_id):
         raise Http404
     context = {'post': post}
     return render(request, 'detail.html', context)
+
+
+def category_detail_view(request, category_id):
+    cat = Post.objects.exclude(published_date__exact=None)
+    try:
+        post = Category.get(pk=post_id)
+    except Post.DoesNotExist:
+        raise Http404
+    context = {'post': post}
+    return render(request, 'detail.html', context)
+
